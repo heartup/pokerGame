@@ -5,7 +5,7 @@ import numpy as np
 # img = cv2.imread("/Users/lhh/Desktop/logo.png")
 stream = cv2.VideoCapture('/Users/lhh/card/video/20180426231735.mp4')
 
-BKG_THRESH = 60
+BKG_THRESH = 120
 
 person = {'l':14, 'r':1411}
 

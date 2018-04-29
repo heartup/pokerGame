@@ -5,6 +5,13 @@ import os
 import match
 import video
 
+class Person_RECT:
+    def __init__(self, x, y, w, h):
+        self.x = x
+        self.y = y
+        self.width = w
+        self.height = h
+
 ### ---- INITIALIZATION ---- ###
 # Define constants and initialize variables
 
@@ -41,9 +48,14 @@ train_nums = match.load_nums(path + '/num/')
 # The main loop repeatedly grabs frames from the video stream
 # and processes them to find and identify playing cards.
 
+STD_WIDTH = 494
+STD_HEIGHT = 386
+
 BKG_THRESH = 120
 
-person = {'l':14, 'r':1411}
+person = {'l': Person_RECT(14, 14, 494, 386),
+          'r': Person_RECT(1411, 14, 494, 386),
+          'b': Person_RECT(628, 447, 661, 523)}
 
 card_width = 85
 card_height = 118
@@ -74,8 +86,11 @@ while quit == 0:
     thresh_level = bkg_level + BKG_THRESH
     ret, thresh = cv2.threshold(blur, thresh_level, 255, cv2.THRESH_BINARY_INV)
 
-    for p_name, x_pos in person.items():
-        imgCrop = thresh[y_pos:y_pos + 386, x_pos:x_pos + 494]
+    for p_name, rect in person.items():
+        imgCrop = thresh[rect.y:rect.y + rect.height, rect.x:rect.x + rect.width]
+
+        if rect.width != STD_WIDTH:
+            imgCrop = cv2.resize(imgCrop, (STD_WIDTH, STD_HEIGHT))
 
         for i in range(3):
             y = card3_1_y - i * gap_y
@@ -89,7 +104,7 @@ while quit == 0:
                 clr = match.match(card_clr, train_clrs, CLR_DIFF_MAX)
                 num = match.match(card_num, train_nums, NUM_DIFF_MAX)
 
-                img = match.draw_results(img, clr, num, x_pos + x, y_pos + y)
+                img = match.draw_results(img, clr, num, rect.x, rect.y, x, y, rect.width / STD_WIDTH, rect.height / STD_HEIGHT)
                 # cv2.drawContours(img, temp_cnts, -1, (255, 0, 0), 2)
 
     cv2.putText(img, "FPS: " + str(int(frame_rate_calc)), (10, 26), font, 0.7, (255, 0, 255), 2, cv2.LINE_AA)

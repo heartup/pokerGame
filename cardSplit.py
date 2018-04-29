@@ -54,17 +54,3 @@ while quit == 0:
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         cam_quit = 1
-
-# card1 = imgCrop[265:265+118,4:4+85]
-# cv2.imwrite('/Users/lhh/card/video/card1.png', card1)
-
-# Display cropped image
-# cv2.imshow("Image", num)
-# cv2.imshow("Crop", imCrop)
-# cv2.waitKey(0)
-
-# cv2.namedWindow("Image")
-# cv2.selectROI("Image", num[1])
-# cv2.imshow("Image", num[1])
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()

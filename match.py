@@ -81,16 +81,16 @@ def match(img, train, max_diff):
     return matched
 
 
-def draw_results(image, clr, num, x, y):
+def draw_results(image, clr, num, x, y, xpos, ypos, width_ratio, height_ratio):
     """Draw the card name, center point, and contour on the camera image."""
 
     cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
 
     # Draw card name twice, so letters have black outline
-    cv2.putText(image, (POKE_CLRS[clr]), (x + 25, y + 20), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
-    cv2.putText(image, (POKE_CLRS[clr]), (x + 25, y + 20), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
+    cv2.putText(image, (POKE_CLRS[clr]), (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
+    cv2.putText(image, (POKE_CLRS[clr]), (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
 
-    cv2.putText(image, num, (x + 40, y + 20), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
-    cv2.putText(image, num, (x + 40, y + 20), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
+    cv2.putText(image, num, (x + int((xpos + 40) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
+    cv2.putText(image, num, (x + int((xpos + 40) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
 
     return image

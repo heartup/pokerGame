@@ -20,7 +20,7 @@ IM_WIDTH = 1920
 IM_HEIGHT = 1080
 FRAME_RATE = 10
 
-CLR_DIFF_MAX = 2000
+CLR_DIFF_MAX = 600
 NUM_DIFF_MAX = 700
 
 ## Initialize calculated frame rate because it's calculated AFTER the first time it's displayed
@@ -95,6 +95,8 @@ while quit == 0:
         for i in range(3):
             y = card3_1_y - i * gap_y
             for j in range(5):
+                if i == 2 and j == 4:
+                    print("lhh")
                 x = card3_1_x + j * gap_x
                 card = imgCrop[y:y + card_height, x:x + card_width]
                 card_clr = card[3:43, 3:37]
@@ -104,7 +106,8 @@ while quit == 0:
                 clr = match.match(card_clr, train_clrs, CLR_DIFF_MAX)
                 num = match.match(card_num, train_nums, NUM_DIFF_MAX)
 
-                img = match.draw_results(img, clr, num, rect.x, rect.y, x, y, rect.width / STD_WIDTH, rect.height / STD_HEIGHT)
+                if num != "":
+                    img = match.draw_results(img, clr, num, rect.x, rect.y, x, y, rect.width / STD_WIDTH, rect.height / STD_HEIGHT)
                 # cv2.drawContours(img, temp_cnts, -1, (255, 0, 0), 2)
 
     cv2.putText(img, "FPS: " + str(int(frame_rate_calc)), (10, 26), font, 0.7, (255, 0, 255), 2, cv2.LINE_AA)

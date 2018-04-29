@@ -8,7 +8,7 @@ POKE_CLRS = {
     "spades":"S",
     "diamonds":"D",
     "clubs":"C",
-    "hearts":"H"
+    "hearts":"H",
 }
 
 class Train_suits:

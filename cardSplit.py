@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 
-# img = cv2.imread("/Users/lhh/Desktop/logo.png")
+# num = cv2.imread("/Users/lhh/Desktop/logo.png")
 stream = cv2.VideoCapture('/Users/lhh/card/video/20180426231735.mp4')
 
 BKG_THRESH = 120
@@ -58,12 +58,12 @@ while quit == 0:
 # cv2.imwrite('/Users/lhh/card/video/card1.png', card1)
 
 # Display cropped image
-# cv2.imshow("Image", img)
+# cv2.imshow("Image", num)
 # cv2.imshow("Crop", imCrop)
 # cv2.waitKey(0)
 
 # cv2.namedWindow("Image")
-# cv2.selectROI("Image", img[1])
-# cv2.imshow("Image", img[1])
+# cv2.selectROI("Image", num[1])
+# cv2.imshow("Image", num[1])
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()

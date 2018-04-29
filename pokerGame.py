@@ -13,12 +13,12 @@ IM_WIDTH = 1920
 IM_HEIGHT = 1080
 FRAME_RATE = 10
 
+CLR_DIFF_MAX = 2000
+NUM_DIFF_MAX = 700
+
 ## Initialize calculated frame rate because it's calculated AFTER the first time it's displayed
 frame_rate_calc = 1
 freq = cv2.getTickFrequency()
-
-## Define font to use
-font = cv2.FONT_HERSHEY_SIMPLEX
 
 # Initialize camera object and video feed from the camera. The video stream is set up
 # as a seperate thread that constantly grabs frames from the camera feed.
@@ -51,6 +51,7 @@ gap_y = 131
 card3_1_x = 4
 card3_1_y = 265
 
+y_pos = 14
 
 frame = 0
 
@@ -71,7 +72,7 @@ while quit == 0:
     ret, thresh = cv2.threshold(blur, thresh_level, 255, cv2.THRESH_BINARY_INV)
 
     for p_name, x_pos in person.items():
-        imgCrop = thresh[14:14 + 386, x_pos:x_pos + 494]
+        imgCrop = thresh[y_pos:y_pos + 386, x_pos:x_pos + 494]
 
         for i in range(3):
             y = card3_1_y - i * gap_y
@@ -81,16 +82,16 @@ while quit == 0:
                 card_clr = card[3:43, 3:37]
                 card_num = card[39:114, 30:82]
 
-                clr = match.match_clr(card_clr, train_clrs)
-                num = match.match_num(card_num, train_nums)
+                clr = match.match(card_clr, train_clrs, CLR_DIFF_MAX)
+                num = match.match(card_num, train_nums, NUM_DIFF_MAX)
 
-                image = match.draw_results(image, clr, num)
-                cv2.drawContours(image, temp_cnts, -1, (255, 0, 0), 2)
+                img = match.draw_results(img, clr, num, x_pos + x, y_pos + y)
+                # cv2.drawContours(img, temp_cnts, -1, (255, 0, 0), 2)
 
-    cv2.putText(image, "FPS: " + str(int(frame_rate_calc)), (10, 26), font, 0.7, (255, 0, 255), 2, cv2.LINE_AA)
+    cv2.putText(img, "FPS: " + str(int(frame_rate_calc)), (10, 26), font, 0.7, (255, 0, 255), 2, cv2.LINE_AA)
 
     # Finally, display the image with the identified cards!
-    cv2.imshow("Card Detector", image)
+    cv2.imshow("Card Detector", img)
 
     # Calculate framerate
     t2 = cv2.getTickCount()

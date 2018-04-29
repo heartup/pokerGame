@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+## Define font to use
+font = cv2.FONT_HERSHEY_SIMPLEX
 
 class Train_suits:
     def __init__(self):
@@ -41,80 +43,45 @@ def load_clrs(filepath):
     return train_suits
 
 
-def match_card(qCard, train_ranks, train_suits):
+def match(img, train, max_diff):
     """Finds best rank and suit matches for the query card. Differences
     the query card rank and suit images with the train rank and suit images.
     The best match is the rank or suit image that has the least difference."""
 
-    best_rank_match_diff = 10000
-    best_suit_match_diff = 10000
-    best_rank_match_name = "Unknown"
-    best_suit_match_name = "Unknown"
+    best_match_diff = 10000
+    best_match_name = "Unknown"
     i = 0
 
-    # If no contours were found in query card in preprocess_card function,
-    # the num size is zero, so skip the differencing process
-    # (card will be left as Unknown)
-    if (len(qCard.rank_img) != 0) and (len(qCard.suit_img) != 0):
+    for t in train:
 
-        # Difference the query card rank image from each of the train rank images,
-        # and store the result with the least difference
-        for Trank in train_ranks:
+        diff_img = cv2.absdiff(img, t.img)
+        diff = int(np.sum(diff_img) / 255)
 
-            diff_img = cv2.absdiff(qCard.rank_img, Trank.img)
-            rank_diff = int(np.sum(diff_img) / 255)
+        if diff < best_match_diff:
+            best_match_diff = diff
+            best_match_name = t.name
 
-            if rank_diff < best_rank_match_diff:
-                best_rank_diff_img = diff_img
-                best_rank_match_diff = rank_diff
-                best_rank_name = Trank.name
-
-        # Same process with suit images
-        for Tsuit in train_suits:
-
-            diff_img = cv2.absdiff(qCard.suit_img, Tsuit.img)
-            suit_diff = int(np.sum(diff_img) / 255)
-
-            if suit_diff < best_suit_match_diff:
-                best_suit_diff_img = diff_img
-                best_suit_match_diff = suit_diff
-                best_suit_name = Tsuit.name
 
     # Combine best rank match and best suit match to get query card's identity.
     # If the best matches have too high of a difference value, card identity
     # is still Unknown
-    if (best_rank_match_diff < RANK_DIFF_MAX):
-        best_rank_match_name = best_rank_name
-
-    if (best_suit_match_diff < SUIT_DIFF_MAX):
-        best_suit_match_name = best_suit_name
+    if (best_match_diff < max_diff):
+        matched = best_match_name
 
     # Return the identiy of the card and the quality of the suit and rank match
-    return best_rank_match_name, best_suit_match_name, best_rank_match_diff, best_suit_match_diff
+    return matched
 
 
-def draw_results(image, qCard):
+def draw_results(image, clr, num, x, y):
     """Draw the card name, center point, and contour on the camera image."""
 
-    x = qCard.center[0]
-    y = qCard.center[1]
     cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
 
-    rank_name = qCard.best_rank_match
-    suit_name = qCard.best_suit_match
-
     # Draw card name twice, so letters have black outline
-    cv2.putText(image, (rank_name + ' of'), (x - 60, y - 10), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
-    cv2.putText(image, (rank_name + ' of'), (x - 60, y - 10), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
+    cv2.putText(image, (clr + ' of'), (x - 60, y - 10), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
+    cv2.putText(image, (clr + ' of'), (x - 60, y - 10), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
 
-    cv2.putText(image, suit_name, (x - 60, y + 25), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
-    cv2.putText(image, suit_name, (x - 60, y + 25), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
-
-    # Can draw difference value for troubleshooting purposes
-    # (commented out during normal operation)
-    # r_diff = str(qCard.rank_diff)
-    # s_diff = str(qCard.suit_diff)
-    # cv2.putText(image,r_diff,(x+20,y+30),font,0.5,(0,0,255),1,cv2.LINE_AA)
-    # cv2.putText(image,s_diff,(x+20,y+50),font,0.5,(0,0,255),1,cv2.LINE_AA)
+    cv2.putText(image, num, (x - 60, y + 25), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
+    cv2.putText(image, num, (x - 60, y + 25), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
 
     return image

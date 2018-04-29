@@ -6,9 +6,10 @@ img = stream.read()[1]
 
 cv2.imwrite('/Users/lhh/card/video/first.png', img)
 
+person = {'l':14, 'r':1411}
+
 # imgCrop = img[14:14+386, 14:14+494]
-imgCrop = img[14:14+386, 1411:1411+494]
-cv2.imwrite('/Users/lhh/card/video/person.png', imgCrop)
+
 
 card_width = 85
 card_height = 118
@@ -17,20 +18,23 @@ gap_x = 101
 gap_y = 131
 
 card3_1_x = 4
-# card3_1_x = 1411
 card3_1_y = 265
 
 
-for i in range(3):
-    y = card3_1_y - i * gap_y
-    for j in range(5):
-        x = card3_1_x + j * gap_x
-        card = imgCrop[y:y+card_height, x:x+card_width]
-        cv2.imwrite('/Users/lhh/card/video/card{:d}{:d}.png'.format(i, j), card)
-        card_clr = card[3:43, 3:37]
-        cv2.imwrite('/Users/lhh/card/video/card{:d}{:d}clr.png'.format(i, j), card_clr)
-        card_num = card[39:114, 30:82]
-        cv2.imwrite('/Users/lhh/card/video/card{:d}{:d}num.png'.format(i, j), card_num)
+for p_name,x_pos in person.items():
+    imgCrop = img[14:14 + 386, x_pos:x_pos + 494]
+    cv2.imwrite('/Users/lhh/card/video/' + p_name + '.png', imgCrop)
+
+    for i in range(3):
+        y = card3_1_y - i * gap_y
+        for j in range(5):
+            x = card3_1_x + j * gap_x
+            card = imgCrop[y:y+card_height, x:x+card_width]
+            cv2.imwrite('/Users/lhh/card/video/' + p_name + '_{:d}{:d}.png'.format(i, j), card)
+            card_clr = card[3:43, 3:37]
+            cv2.imwrite('/Users/lhh/card/video/' + p_name + '_card_{:d}{:d}_clr.png'.format(i, j), card_clr)
+            card_num = card[39:114, 30:82]
+            cv2.imwrite('/Users/lhh/card/video/' + p_name + '_card_{:d}{:d}_num.png'.format(i, j), card_num)
 
 
 # card1 = imgCrop[265:265+118,4:4+85]

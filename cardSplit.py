@@ -1,13 +1,13 @@
 import cv2
 import os
+import numpy as np
 
 # img = cv2.imread("/Users/lhh/Desktop/logo.png")
 stream = cv2.VideoCapture('/Users/lhh/card/video/20180426231735.mp4')
 
+BKG_THRESH = 60
+
 person = {'l':14, 'r':1411}
-
-# imgCrop = img[14:14+386, 14:14+494]
-
 
 card_width = 85
 card_height = 118
@@ -26,8 +26,15 @@ while quit == 0:
     img = stream.read()[1]
     cv2.imwrite('/Users/lhh/card/video/{:d}/frame.png'.format(frame), img)
 
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    img_w, img_h = np.shape(img)[:2]
+    bkg_level = gray[int(img_h / 100)][int(img_w / 2)]
+    thresh_level = bkg_level + BKG_THRESH
+    ret, thresh = cv2.threshold(blur, thresh_level, 255, cv2.THRESH_BINARY_INV)
+
     for p_name,x_pos in person.items():
-        imgCrop = img[14:14 + 386, x_pos:x_pos + 494]
+        imgCrop = thresh[14:14 + 386, x_pos:x_pos + 494]
         cv2.imwrite('/Users/lhh/card/video/{:d}/'.format(frame) + p_name + '.png', imgCrop)
 
         for i in range(3):

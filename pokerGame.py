@@ -5,6 +5,15 @@ import os
 import match
 import video
 
+
+POKE_CLRS = {
+    "spades":"S",
+    "diamonds":"D",
+    "clubs":"C",
+    "hearts":"H",
+    "":""
+}
+
 class Person_RECT:
     def __init__(self, x, y, w, h):
         self.x = x
@@ -95,8 +104,6 @@ while quit == 0:
         for i in range(3):
             y = card3_1_y - i * gap_y
             for j in range(5):
-                if i == 2 and j == 4:
-                    print("lhh")
                 x = card3_1_x + j * gap_x
                 card = imgCrop[y:y + card_height, x:x + card_width]
                 card_clr = card[3:43, 3:37]
@@ -106,8 +113,11 @@ while quit == 0:
                 clr = match.match(card_clr, train_clrs, CLR_DIFF_MAX)
                 num = match.match(card_num, train_nums, NUM_DIFF_MAX)
 
+                if num == "jok":
+                    clr = ""
+
                 if num != "":
-                    img = match.draw_results(img, clr, num, rect.x, rect.y, x, y, rect.width / STD_WIDTH, rect.height / STD_HEIGHT)
+                    img = match.draw_results(img, POKE_CLRS[clr], num, rect.x, rect.y, x, y, rect.width / STD_WIDTH, rect.height / STD_HEIGHT)
                 # cv2.drawContours(img, temp_cnts, -1, (255, 0, 0), 2)
 
     cv2.putText(img, "FPS: " + str(int(frame_rate_calc)), (10, 26), font, 0.7, (255, 0, 255), 2, cv2.LINE_AA)

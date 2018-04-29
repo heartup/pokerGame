@@ -4,13 +4,6 @@ import numpy as np
 ## Define font to use
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
 
-POKE_CLRS = {
-    "spades":"S",
-    "diamonds":"D",
-    "clubs":"C",
-    "hearts":"H",
-}
-
 class Train_suits:
     def __init__(self):
         self.img = [] # Thresholded, sized suit image loaded from hard drive
@@ -41,7 +34,7 @@ def load_nums(filepath):
     train_suits = []
     i = 0
 
-    for Suit in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13']:
+    for Suit in ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', "jok"]:
         train_suits.append(Train_suits())
         train_suits[i].name = Suit
         filename = Suit + '.png'
@@ -84,11 +77,13 @@ def match(img, train, max_diff):
 def draw_results(image, clr, num, x, y, xpos, ypos, width_ratio, height_ratio):
     """Draw the card name, center point, and contour on the camera image."""
 
+    if clr == "err":
+        print("lhh")
     cv2.circle(image, (x, y), 5, (255, 0, 0), -1)
 
     # Draw card name twice, so letters have black outline
-    cv2.putText(image, (POKE_CLRS[clr]), (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
-    cv2.putText(image, (POKE_CLRS[clr]), (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
+    cv2.putText(image, clr, (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
+    cv2.putText(image, clr, (x + int((xpos + 25) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (50, 200, 200), 2, cv2.LINE_AA)
 
     cv2.putText(image, num, (x + int((xpos + 40) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (0, 0, 0), 3, cv2.LINE_AA)
     cv2.putText(image, num, (x + int((xpos + 40) * width_ratio), y + int((ypos + 20) * height_ratio)), font, 1, (50, 200, 200), 2, cv2.LINE_AA)

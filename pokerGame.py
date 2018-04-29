@@ -20,12 +20,15 @@ NUM_DIFF_MAX = 700
 frame_rate_calc = 1
 freq = cv2.getTickFrequency()
 
+## Define font to use
+font = cv2.FONT_HERSHEY_SIMPLEX
+
 # Initialize camera object and video feed from the camera. The video stream is set up
 # as a seperate thread that constantly grabs frames from the camera feed.
 # See VideoStream.py for VideoStream class definition
 ## IF USING USB CAMERA INSTEAD OF PICAMERA,
 ## CHANGE THE THIRD ARGUMENT FROM 1 TO 2 IN THE FOLLOWING LINE:
-videostream = video.VideoStream.VideoStream((IM_WIDTH, IM_HEIGHT), FRAME_RATE,
+videostream = video.VideoStream((IM_WIDTH, IM_HEIGHT), FRAME_RATE,
                                       '/Users/lhh/card/video/20180426231735.mp4').start()
 time.sleep(1)  # Give the camera time to warm up
 
@@ -62,7 +65,7 @@ while quit == 0:
     # Start timer (for calculating frame rate)
     t1 = cv2.getTickCount()
 
-    img = videostream.read()[1]
+    img = videostream.read()
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -80,6 +83,7 @@ while quit == 0:
                 x = card3_1_x + j * gap_x
                 card = imgCrop[y:y + card_height, x:x + card_width]
                 card_clr = card[3:43, 3:37]
+                card_clr[36:43, 27:37] = 0
                 card_num = card[39:114, 30:82]
 
                 clr = match.match(card_clr, train_clrs, CLR_DIFF_MAX)

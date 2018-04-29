@@ -44,6 +44,7 @@ while quit == 0:
                 card = imgCrop[y:y+card_height, x:x+card_width]
                 cv2.imwrite('/Users/lhh/card/video/{:d}/'.format(frame) + p_name + '_{:d}{:d}.png'.format(i, j), card)
                 card_clr = card[3:43, 3:37]
+                card_clr[36:43, 27:37] = 0
                 cv2.imwrite('/Users/lhh/card/video/{:d}/'.format(frame) + p_name + '_card_{:d}{:d}_clr.png'.format(i, j), card_clr)
                 card_num = card[39:114, 30:82]
                 cv2.imwrite('/Users/lhh/card/video/{:d}/'.format(frame) + p_name + '_card_{:d}{:d}_num.png'.format(i, j), card_num)
